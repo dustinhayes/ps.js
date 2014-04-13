@@ -8,7 +8,7 @@ var ps = (function() {
         };
 
     ps.publish = function (eventNames, data, context) {
-        var publish = function (event) {
+        var init = function (event) {
                 var fn;
 
                 event = events[event];
@@ -27,7 +27,7 @@ var ps = (function() {
             data = _splitStr(data);
 
         eventNames = _splitStr(eventNames);
-        eventNames.forEach(publish);
+        eventNames.forEach(init);
     };
 
     ps.subscribe = function (eventNames, fnName, fn) {
