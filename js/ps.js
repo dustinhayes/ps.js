@@ -4,7 +4,7 @@ var ps = (function() {
         events = {},
 
         _splitStr = function(str) {
-            return str.split(', ');
+            return str.trim().split(', ');
         };
 
     ps.publish = function (eventNames, data, context) {
@@ -26,21 +26,14 @@ var ps = (function() {
         if (typeof data === 'string')
             data = _splitStr(data);
 
-        eventNames = _splitStr(eventNames);
-        eventNames.forEach(init);
+        _splitStr(eventNames).forEach(init);
     };
 
     ps.subscribe = function (eventNames, fnName, fn) {
-        var addEvent = function (event) {
-                if (events[event])
-                    return;
-
-                events[event] = {};
-            },
-            bindFns = function(event) {
+        var bindFns = function(event) {
                 var newFn;
 
-                event = events[event];
+                event = events[event] = events[event] || {};
 
                 if (typeof fnName === 'object')
                     for ( newFn in fnName )
@@ -53,9 +46,7 @@ var ps = (function() {
             throw new Error('Expected a string as the ' +
                 'second parameter: Recieved ' + typeof fnName);
 
-        eventNames = _splitStr(eventNames);
-        eventNames.forEach(addEvent);
-        eventNames.forEach(bindFns);
+        _splitStr(eventNames).forEach(bindFns);
     };
 
     ps.unsubscribe = function (eventNames, fnNames) {
@@ -76,8 +67,7 @@ var ps = (function() {
                     delete events[event];
             };
 
-        eventNames = _splitStr(eventNames);
-        eventNames.forEach(unbindFns);
+        _splitStr(eventNames).forEach(unbindFns);
     };
 
     return ps;
